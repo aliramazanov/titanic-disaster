@@ -27,8 +27,8 @@ The project examines three key aspects of survival for now:
 
 ## Files
 
-Titanic.ipynb - Main analysis notebook
-age_analysis.py - Age group survival analysis
-family_analysis.py - Family size impact analysis
-survival_analysis.py - Demographic breakdown analysis
-requirements.txt - Python dependencies
+- Titanic.ipynb - Main analysis notebook
+- age_analysis.py - Age group survival analysis
+- family_analysis.py - Family size impact analysis
+- survival_analysis.py - Demographic breakdown analysis
+- requirements.txt - Python dependencies
