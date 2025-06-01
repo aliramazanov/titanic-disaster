@@ -11,15 +11,19 @@ def create_family_analysis(df):
         people_with_surname = df_family[df_family['Surname'] == surname]
 
         if len(people_with_surname) > 1:
-            family_claims = people_with_surname['SibSp'] + people_with_surname['Parch']
+            family_claims = (people_with_surname['SibSp'] +
+                             people_with_surname['Parch'])
 
             if family_claims.sum() > 0:
-                for (passenger_class, port), group in people_with_surname.groupby(['Pclass', 'Embarked']):
+                for (passenger_class, port), group in (
+                        people_with_surname.groupby(['Pclass', 'Embarked'])):
+
                     if len(group) > 1:
                         family_id = f"{surname}_{passenger_class}_{port}"
                         df_family.loc[group.index, 'FamilyID'] = family_id
 
     family_sizes = df_family.groupby('FamilyID').size()
+
     df_family['FamilySize'] = df_family['FamilyID'].map(family_sizes)
     df_family['SimpleFamilySize'] = df_family['SibSp'] + df_family['Parch'] + 1
 
@@ -46,28 +50,38 @@ def create_family_analysis(df):
 
 def check_family_identification(df_family):
     all_families = df_family.groupby('FamilyID').size()
+
     print(f"Found {len(all_families)} families")
+
     print(f"Biggest family: {all_families.max()} people")
+
     print(f"People traveling alone: {sum(all_families == 1)}")
     print(f"People in groups: {sum(all_families > 1)}")
 
-    problems = df_family[abs(df_family['FamilySize'] - df_family['SimpleFamilySize']) > 2]
+    problems = df_family[abs(df_family['FamilySize']
+                             - df_family['SimpleFamilySize']) > 2]
+
     print(f"Potential problems: {len(problems)} cases")
 
     known_families = ['Sage', 'Andersson', 'Rice', 'Goodwin', 'Panula']
+
     print("\nKnown large families:")
+
     for surname in known_families:
         matches = df_family[df_family['Surname'] == surname]
+
         if len(matches) > 0:
             groups = matches.groupby('FamilyID').size()
             print(f"  {surname}: {len(matches)} people in {len(groups)} groups")
 
     claim_family = df_family[(df_family['SibSp'] > 0) | (df_family['Parch'] > 0)]
+
     alone_but_claim = claim_family[claim_family['FamilySize'] == 1]
     print(f"\nPeople claiming family but alone: {len(alone_but_claim)}")
 
     issues = len(problems) + len(alone_but_claim)
     accuracy = ((len(df_family) - issues) / len(df_family) * 100)
+
     print(f"Estimated accuracy: {accuracy:.1f}%")
 
 
@@ -81,8 +95,10 @@ def calculate_survival_rates(df_family):
 
 def show_results(results):
     print("\nSurvival Results:")
+
     for category, row in results.iterrows():
-        print(f"{category}: {row['Survived']:.0f}/{row['Total']:.0f} people survived ({row['Percentage']:.1f}%)")
+        print(f"{category}: {row['Survived']:.0f}/{row['Total']:.0f} "
+              f"people survived ({row['Percentage']:.1f}%)")
 
 
 def create_charts(df_family, results):
